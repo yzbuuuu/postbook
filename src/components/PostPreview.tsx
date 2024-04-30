@@ -11,13 +11,13 @@ import {useContext} from 'react';
 import DetailsScreen from '../screens/DetailsScreen';
 import {Swipeable} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
-import {deletePost} from '../store';
+import {deletePost} from '../redux/stateSlice/postsSlice';
 
 interface PostType {
   id: number;
   isFavorited: false;
   title: string;
-  context: string;
+  content: string;
 }
 
 const PostPreview: React.FC<{post: PostType; navigation: any}> = ({
@@ -26,7 +26,7 @@ const PostPreview: React.FC<{post: PostType; navigation: any}> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const {title, context} = post;
+  const {title, content} = post;
   const onPress = () => {
     navigation.navigate('Post', {post: post});
     console.log('Card Pressed!');
@@ -44,7 +44,7 @@ const PostPreview: React.FC<{post: PostType; navigation: any}> = ({
     <Swipeable key={post.id} renderRightActions={rightSwipeActions}>
       <TouchableOpacity style={styles.card} onPress={onPress}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.context}>{context}</Text>
+        <Text style={styles.content} numberOfLines={3}>{content}</Text>
       </TouchableOpacity>
     </Swipeable>
   );
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  context: {
+  content: {
     fontSize: 14,
     color: '#666',
   },

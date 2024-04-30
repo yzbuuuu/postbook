@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useState, createContext} from 'react';
+import React, {useState, createContext, useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -27,17 +27,17 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import {Provider} from 'react-redux';
+import {Provider, useDispatch} from 'react-redux';
 
 import Navigation from './navigation/AppNavigator';
 import PostScreen from './screens/PostScreen';
 import DetailsScreen from './screens/DetailsScreen';
 import {createStackNavigator} from '@react-navigation/stack';
-import {PostContext} from './services/PostContext';
-import store from './store';
+import store from './redux/store';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import AddPostScreen from './components/AddPostScreen';
 import { Ionicons } from '@expo/vector-icons';
+import {fetchPosts} from './redux/actions';
 
 const HomeStack = createStackNavigator();
 
@@ -61,6 +61,7 @@ const Tab = createBottomTabNavigator();
 // }
 
 function App(): React.JSX.Element {
+
   return (
     <Provider store={store}>
       <Navigation/>

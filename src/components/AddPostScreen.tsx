@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import {View, TextInput, Button, StyleSheet, Modal, Alert, Text, Pressable} from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
-import {addPost} from '../stateSlice/postsSlice'; // 假设你的actions文件已定义addPost
+import {addPost} from '../redux/stateSlice/postsSlice'; // 假设你的actions文件已定义addPost
 
-function AddPostScreen({setVisible}) {
+
+
+function AddPostScreen({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -13,7 +16,8 @@ function AddPostScreen({setVisible}) {
     dispatch(addPost({title, content}));
     setTitle('');
     setContent('');
-    setVisible(false);
+    // setVisible(false);
+    navigation.goBack()
   };
 
   return (
@@ -31,14 +35,14 @@ function AddPostScreen({setVisible}) {
         onChangeText={setContent}
         multiline
       />
-      <Button title="Done!" onPress={handlePost} />
-      <Button title="Cancle" onPress={()=>setVisible(false)} />
+      <Button title="Commit" onPress={handlePost} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    // margin:50,
     flex: 1,
     padding: 10,
     backgroundColor: '#fff',

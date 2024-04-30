@@ -8,17 +8,16 @@ import {
   ScrollView,
   TextInput,
 } from 'react-native';
-import {PostContext} from '../services/PostContext';
 import PostPreview from '../components/PostPreview';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import Markdown from 'react-native-markdown-display';
 import {useDispatch} from 'react-redux';
-import {updatePost} from '../store';
+import {updatePost} from '../redux/stateSlice/postsSlice';
 
 interface PostType {
   title: string;
-  context: string;
+  content: string;
 }
 
 type RootStackParamList = {
@@ -47,13 +46,13 @@ function textToMarkdown(title, content) {
 const DetailsScreen = ({route, navigation}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState('');
-  const [context, setContext] = useState('');
+  const [content, setContent] = useState('');
   const dispatch = useDispatch();
   const {post} = route.params;
 
   useEffect(() => {
     setTitle(post.title);
-    setContext(post.context);
+    setContent(post.content);
   }, [post]);
   useEffect(() => {
     navigation.setOptions({
@@ -61,42 +60,37 @@ const DetailsScreen = ({route, navigation}) => {
         <Button onPress={toggleEdit} title={isEditing ? 'Done' : 'Edit'} />
       ),
     });
-  }, [navigation, isEditing, title, context]);
+  }, [navigation, isEditing, title, content]);
 
   const toggleEdit = () => {
     if (isEditing) {
       // 当用户点击"Done"
-      dispatch(updatePost({id: post.id, title, context}));
+      dispatch(updatePost({id: post.id, title, content}));
     }
     setIsEditing(!isEditing); // 切换编辑状态
   };
 
-  const handleUpdatePost = () => {
-    // 调用 updatePost reducer 来更新帖子数据
-    dispatch(updatePost({id: post.id, title, context}));
-  };
-
-  const markdownContent = textToMarkdown(title, context);
+  const markdownContent = textToMarkdown(title, content);
 
   return (
     <ScrollView style={styles.container}>
       {isEditing ? (
         <>
           <TextInput
-                style={styles.input}
-                value={title}
-                onChangeText={setTitle}
-                placeholder="Title"
-                editable={isEditing}
-            />
-            <TextInput
-                style={styles.input}
-                value={context}
-                onChangeText={setContext}
-                placeholder="Content"
-                multiline
-                editable={isEditing}
-            />
+            style={styles.row}
+            value={title}
+            onChangeText={setTitle}
+            placeholder="Title"
+            editable={isEditing}
+          />
+          <TextInput
+            style={styles.row}
+            value={content}
+            onChangeText={setContent}
+            placeholder="Content"
+            multiline
+            editable={isEditing}
+          />
         </>
       ) : (
         <Markdown>{markdownContent}</Markdown>
@@ -142,6 +136,11 @@ const markdownStyles = {
 };
 
 const styles = StyleSheet.create({
+  row: {
+    padding: 4,
+    borderBottomColor: 'red',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
   container: {
     padding: 10,
   },
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderWidth: 1,
     borderColor: '#ddd',
-},
+  },
 });
 
 export default DetailsScreen;
